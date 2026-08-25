@@ -9,8 +9,15 @@
 
 ## Problem
 
-> Host I/O queue 상태를 활용한 background garbage collection이 write amplification을
-> 과도하게 증가시키지 않으면서 GC로 인한 tail latency를 낮출 수 있는가?
+> Can garbage collection that is aware of host I/O queue state reduce GC-induced tail
+> latency without inflating write amplification unacceptably?
+>
+> (Host I/O queue 상태를 활용한 background garbage collection이 write amplification을
+> 과도하게 증가시키지 않으면서 GC로 인한 tail latency를 낮출 수 있는가?)
+
+It is a trade-off question, so every result below is reported as a **pair** — a
+tail-latency number *and* a WAF number. Lowering p99 by paying unbounded WAF is not an
+answer.
 
 ## What was implemented
 
