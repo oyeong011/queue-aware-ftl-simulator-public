@@ -1,0 +1,5 @@
+qd,label,request_count,completed_request_count,simulated_time_ns,throughput_reqs_per_sec,avg_latency_ns,p50_latency_ns,p95_latency_ns,p99_latency_ns,avg_queue_wait_ns,avg_device_service_ns,host_write_pages,nand_write_pages,waf,gc_count,foreground_gc_count,background_gc_count,pages_moved_by_gc,gc_induced_stall_ns,free_page_ratio_end,invalid_page_ratio_end,erase_count_mean,erase_count_stddev,erase_count_max
+1,qd1,200000,200000,43111100000,4639.18,2.15908e+10,2.16066e+10,4.09339e+10,4.26848e+10,2.15906e+10,215556,60202,60202,1,0,0,0,0,0,0.942587,0.00365353,0,0,0
+4,qd4,200000,200000,15974500000,12520,7.99523e+09,7.9984e+09,1.51659e+10,1.58074e+10,7.99501e+09,215556,60202,60202,1,0,0,0,0,0,0.942587,0.00365353,0,0,0
+16,qd16,200000,200000,15685850000,12750.3,7.8995e+09,7.93045e+09,1.49037e+10,1.55237e+10,7.89928e+09,215556,60202,60202,1,0,0,0,0,0,0.942587,0.00365353,0,0,0
+32,qd32,200000,200000,15685850000,12750.3,7.89906e+09,7.92975e+09,1.49035e+10,1.55224e+10,7.89885e+09,215556,60202,60202,1,0,0,0,0,0,0.942587,0.00365353,0,0,0

@@ -1,0 +1,7 @@
+build/
+__pycache__/
+*.pyc
+
+# Workload traces are regenerated from the seeds in results/manifests/ — never committed.
+results/raw/*_seed*.csv
+!results/raw/exp1_bursty_multiseed.csv

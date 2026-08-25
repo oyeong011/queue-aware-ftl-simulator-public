@@ -1,0 +1,57 @@
+{
+  "experiment": "exp1_policy_comparison_multiseed",
+  "question": "Does queue-aware background GC lower GC-induced tail latency without excessive WAF?",
+  "simulator_commit_at_run": "46fa966adbba0912d326fcf78b39b4e741639bda",
+  "build": "cmake -DCMAKE_BUILD_TYPE=Release; g++ 13.3.0; Ubuntu 24.04",
+  "trace_generation": {
+    "script": "workloads/generator.py",
+    "args": {
+      "pattern": "bursty_write",
+      "capacity_pages": 900000,
+      "count": 2700000,
+      "working_set_frac": 1.0,
+      "qd": 16
+    },
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "note": "Traces are fully determined by (script, args, seed) and are 64-90 MB each, so they are regenerated into a scratch dir rather than committed. This public snapshot tracks no trace files at all; `./experiments/reproduce_core.sh --mode core` regenerates them from the seeds below and reproduces the CSVs in results/ byte-for-byte."
+  },
+  "runner": "experiments/run_exp1_seeds.sh",
+  "sim_invocation": "./build/ftlsim_cli --nand configs/nand.conf --ftl configs/ftl_<policy>.conf --trace <trace> --label <policy>_seed<N>",
+  "policies": [
+    "foreground",
+    "fixed_background",
+    "queue_aware"
+  ],
+  "configs": {
+    "configs/nand.conf": "0db678ec4431eb4d0d53e17a8ec94d5effe4f11abe780d48b227ff3f993a0633",
+    "configs/ftl_foreground.conf": "9fa4bbadeb693007e41217c9053499a24db18160e6e340a1391d0005d350d865",
+    "configs/ftl_fixed_background.conf": "4d3fb03fe536c4b8330f2123320e331ace3064c555f063b87f5545a08e4e84f7",
+    "configs/ftl_queue_aware.conf": "9c1bf835fd89ac69c164f41ada929ed7793c4b146184082edc93aa8d1324f529"
+  },
+  "outputs": {
+    "results/raw/exp1_bursty_multiseed.csv": "c933b71cb48da156e69f49fc3bcb518afec6a7b9654349b5af80ea0ab5957377",
+    "results/processed/exp1_multiseed_summary.csv": "a4f0d6543b1885751affd9f7104129f5683b61ffd4c90ef3b9955c69ab84f93b"
+  },
+  "aggregation": "python3 analysis/aggregate_seeds.py",
+  "headline": {
+    "p99_delta_qa_vs_fg_pct_mean": -4.35,
+    "p99_delta_stdev_pct": 2.1,
+    "gc_stall_delta_pct_mean": -12.95,
+    "gc_stall_delta_stdev_pct": 0.23,
+    "waf_delta_pct_mean": 4.15,
+    "waf_delta_stdev_pct": 0.1,
+    "n_seeds": 5
+  },
+  "snapshot": {
+    "kind": "public code snapshot",
+    "excluded": "results/raw/*_seed0.csv (6 workload traces, ~390 MB total)",
+    "why": "regenerable from (script, args, seed) recorded here; excluded to keep the repository small enough to clone quickly",
+    "kept": "results/raw/exp1_bursty_multiseed.csv is a 3.7 KB metric-row CSV, not a trace - it is the raw evidence behind the headline claim and stays in-tree"
+  }
+}
