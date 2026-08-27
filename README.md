@@ -1,3 +1,32 @@
+> [!IMPORTANT]
+> **Correction notice — the headline numbers below are superseded.**
+>
+> This snapshot's timing model charged garbage-collection cost onto a possibly-stale
+> channel clock (`channel_busy_until += cost`). GC performed while a channel was idle could
+> therefore complete *before* the moment it was decided and disappear from request latency,
+> while the stall counter billed it anyway. The defect favoured the idle-seeking policy:
+> measured hidden GC time was **67.6 s for `queue_aware` vs 37.3 s for `foreground`, a 1.8×
+> asymmetry**.
+>
+> After repairing the accounting and re-running the same traces and seeds:
+>
+> | metric | reported here | corrected | per seed |
+> |---|---:|---:|---|
+> | p99 latency | −4.35 % | **−3.60 %** | −5.63, **+2.11**, −3.58, −5.14, −5.77 |
+> | GC-induced stall | −12.95 % | **−11.45 %** | signs held |
+> | WAF (cost) | +4.15 % | **+3.36 %** | signs held |
+>
+> The preregistered acceptance rule was "sign holds on every seed". Seed 1 flips, so the p99
+> claim **fails its own test** and should not be cited. Separately, the "GC stall reduction"
+> is a **bucket transfer, not a reduction**: `gc_induced_stall_ns` counts only *forced* GC,
+> and under causal accounting background GC also blocks the write that triggered it. Counting
+> all write-blocking GC, `queue_aware` did **6.97 % more** GC work than `foreground`, not less.
+>
+> Corrected analysis, the repair, its verification, and the follow-up policy:
+> **https://github.com/oyeong011/causal-ssd-gc-scheduler**
+>
+> This repository stays frozen at `b6a30b6` so the before/after comparison remains inspectable.
+
 # Queue-Aware FTL Simulator
 
 > **Public code snapshot.** Everything needed to build, test, and reproduce the results
